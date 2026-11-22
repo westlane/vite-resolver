@@ -18,7 +18,10 @@ export type PackageExportEntry =
 export type ResolvePackageExportOptions = {
   preferBrowser?: boolean
   preferDevelopment?: boolean
+  /** @deprecated Default resolution already prefers `source` when present. */
   preferSource?: boolean
+  /** Prefer `import` / `default` over `source` (e.g. when validating published dist). */
+  preferBuilt?: boolean
 }
 
 export type PackageExportResolveTarget = {
@@ -47,7 +50,12 @@ export function pickPackageExportTarget(
   if (options.preferBrowser && entry.browser) return entry.browser
   if (options.preferDevelopment && entry.development) return entry.development
   if (options.preferSource && entry.source) return entry.source
-  return entry.import ?? entry.default ?? entry.types ?? entry.source ?? entry.require ?? null
+  if (options.preferBuilt) {
+    return entry.import ?? entry.default ?? entry.types ?? entry.source ?? entry.require ?? null
+  }
+  if (entry.source) return entry.source
+  if (entry.development) return entry.development
+  return entry.import ?? entry.default ?? entry.types ?? entry.require ?? null
 }
 
 function exportMapKey(packageName: string, specifier: string): string | null {

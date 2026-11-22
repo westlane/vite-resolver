@@ -30,6 +30,46 @@ describe('resolvePackageExport', () => {
     ).toBe(resolve(root, 'dist/entry.js'))
   })
 
+  it('prefers source over import when both are declared (portal dev default)', () => {
+    const root = mkdtempSync(join(tmpdir(), 'vite-resolver-source-'))
+    mkdirSync(join(root, 'src'), { recursive: true })
+    writeFileSync(join(root, 'src', 'widget.ts'), 'export {}')
+    mkdirSync(join(root, 'dist'), { recursive: true })
+    writeFileSync(join(root, 'dist', 'entry.js'), 'export {}')
+    writeFileSync(
+      join(root, 'package.json'),
+      JSON.stringify({
+        name: '@my-org/pkg',
+        exports: {
+          './widget': { source: './src/widget.ts', import: './dist/entry.js' },
+        },
+      }),
+    )
+
+    expect(
+      resolvePackageExport({ packageName: '@my-org/pkg', packageRoot: root }, '@my-org/pkg/widget'),
+    ).toBe(resolve(root, 'src/widget.ts'))
+  })
+
+  it('prefers development over import when source is absent (portal dev)', () => {
+    const root = mkdtempSync(join(tmpdir(), 'vite-resolver-dev-'))
+    mkdirSync(join(root, 'src'), { recursive: true })
+    writeFileSync(join(root, 'src', 'dev.ts'), 'export {}')
+    writeFileSync(
+      join(root, 'package.json'),
+      JSON.stringify({
+        name: '@my-org/pkg',
+        exports: {
+          '.': { development: './src/dev.ts', import: './dist/dev.js' },
+        },
+      }),
+    )
+
+    expect(
+      resolvePackageExport({ packageName: '@my-org/pkg', packageRoot: root }, '@my-org/pkg'),
+    ).toBe(resolve(root, 'src/dev.ts'))
+  })
+
   it('honors skipSpecifiers', () => {
     const root = mkdtempSync(join(tmpdir(), 'vite-resolver-skip-'))
     writeFileSync(

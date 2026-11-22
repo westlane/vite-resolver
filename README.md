@@ -46,6 +46,8 @@ export default {
 
 ## API
 
+- Default pick order (after `preferBrowser` / `preferDevelopment`): **`source` → `import` → `default`** when the export map lists them (portal sibling dev).
+- `preferBuilt: true` on a target restores **dist-first** resolution for tests or production checks.
 - `resolvePackageExport(target, specifier, skipSpecifiers?)`
 - `packageExportResolvePlugin(targets, options?)`
 - `packageExportEsbuildResolvePlugin(targets, options?)`
