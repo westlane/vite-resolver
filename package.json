@@ -4,6 +4,7 @@
   "description": "Vite + esbuild plugins that resolve portaled packages via package.json exports and org-folder sibling checkouts",
   "type": "module",
   "license": "MIT",
+  "packageManager": "yarn@4.9.2",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/westlane/vite-resolver.git"

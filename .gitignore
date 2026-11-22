@@ -3,7 +3,6 @@ dist
 coverage
 *.log
 .DS_Store
-.yarn
 .yarn/*
 !.yarn/patches
 !.yarn/plugins
