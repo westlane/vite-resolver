@@ -21,6 +21,7 @@ jobs:
           registry-url: https://npm.pkg.github.com
       - run: corepack enable
       - run: yarn install --immutable
+      - run: yarn build
       - run: yarn npm publish --access public
         env:
           YARN_NPM_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
